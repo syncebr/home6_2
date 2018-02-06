@@ -1,0 +1,145 @@
+/*Даны два массива : А[n] и B[m](сгенерировать случайным образом).Необходимо создать еще два массива, в которые нужно собрать :
+•	Общие элементы двух массивов;
+•	Элементы массива A, которые не включаются в B;
+Повторов в новых массивах не должно быть!
+(т.е.если общий элемент повторяется в исходном массиве несколько раз,
+то в результирующем массиве он присутствует только один раз)*/
+
+#include<iostream>
+#include<ctime>
+using namespace std;
+
+void PrintArr(int arr[], int size);
+void GenerateArr(int arr[], int size);
+int GeneralNumbers(int arr1[], int size1, int arr2[], int size2, int arr3[]);
+int OtherNumbers(int arr1[], int size1, int arr2[], int size2, int arr4[]);
+
+int main(void) {
+	setlocale(LC_ALL, "rus");
+	srand(time(0));
+	//обьявление размеров массивов
+	const int SIZE_A = 10;
+	const int SIZE_B = 12;
+	//объявление массивов
+	int arr_a[SIZE_A], arr_b[SIZE_B],arr_c[SIZE_A],arr_d[SIZE_B];
+	//генереция и вывод массива А
+	GenerateArr(arr_a, SIZE_A);
+	PrintArr(arr_a, SIZE_A);
+	//генерация и вывод массива B
+	GenerateArr(arr_b, SIZE_B);
+	PrintArr(arr_b, SIZE_B);
+	//вызов функции нахождения общих элементов и вывод полученного массива
+	int colGeneral=GeneralNumbers(arr_a, SIZE_A, arr_b, SIZE_B, arr_c);
+	cout << "Массив общих значений:" << endl;
+	PrintArr(arr_c, colGeneral);
+	//вызов функции нахождения отличных элементов и вывод полученного массива
+	int colOthers = OtherNumbers(arr_a, SIZE_A, arr_b, SIZE_B, arr_d);
+	cout << "Массив различных значений:" << endl;
+	PrintArr(arr_d, colOthers);
+	system("pause");
+	return 0;
+}
+//функция генерации массива
+void GenerateArr(int arr[], int size) {
+	int *ptr=arr;
+	while (ptr < (arr + size)) {
+		*ptr = rand() % 13;
+		ptr++;
+	}
+}
+//функция вывода массива
+void PrintArr(int arr[], int size) {
+	int *ptr=arr;
+	if (size == 0) cout << "массив пуст";
+	while (ptr < (arr + size)) {
+		printf("%2d\t", *ptr);
+		ptr++;
+	}
+	cout << endl;
+}
+/*функция нахождения общих элементов в массивах
+(принимает указатели на 2 массива и их размеры и указатель на массив общих значений(куда записываются значения))*/
+int GeneralNumbers(int arr1[], int size1, int arr2[], int size2, int arr3[]) {
+	int *ptrA = arr1;
+	int *tmpPtr;
+	int *ptrB;
+	int *ptrC = arr3;
+	bool flag=false;
+	int colGeneral = 0;
+	//проход по массиву А
+	while (ptrA < (arr1 + size1)) {
+		//возврат указателей на начало массива и обнуление флага
+		tmpPtr = arr1;
+		flag = false;
+		ptrB = arr2;
+		/*проверка было ли значение элемента массива А в предыдущих повторениях:
+		если было, то подымаем флаг*/
+		
+		while (tmpPtr < ptrA) {
+			if (*ptrA == *tmpPtr) {
+				flag = true;
+				break;
+			}
+			tmpPtr++;
+		}
+		//поиск значения массива А в массиве В
+		while (ptrB < (arr2 + size2)) {
+			//если флаг не был опущен то записываем значение в массив С
+			if (*ptrA == *ptrB && !(flag)) {
+				*ptrC = *ptrA;
+				ptrC++;
+				colGeneral++;
+				break;
+			}
+			ptrB++;
+		}
+		ptrA++;
+	}
+	return colGeneral;
+}
+/*функция нахождения разных элементов в массивах
+(принимает указатели на 2 массива и их размеры и указатель на массив общих значений(куда записываются значения))*/
+int OtherNumbers(int arr1[], int size1, int arr2[], int size2, int arr4[]) {
+	int *ptrA=arr1;
+	int *tmpPtr;
+	int *tmpPtrOther;
+	int *ptrB=arr2;
+	int *ptrD = arr4;
+	bool flag;
+	bool flagOther;
+	int colOthers = 0;
+	//проход по массиву B
+	while (ptrA < (arr1 + size1)) {
+		//возврат указателей на начало массива и обнуление флага
+		tmpPtr = arr1;
+		flag = false;
+		ptrB = arr2;
+		flagOther = false;
+		tmpPtrOther = arr2;
+		/*проверка было ли значение элемента массива B в предыдущих повторениях:
+		если было, то подымаем флаг*/
+		while (tmpPtr < ptrA) {
+			if (*ptrA == *tmpPtr) {
+				flag = true;
+				break;
+			}
+			tmpPtr++;
+		}
+		//если ли элемент В в массиве А? Если да, то флаг = true, если нет то флаг = false
+		while (tmpPtrOther < (arr2+size2)) {
+			if (*ptrA == *tmpPtrOther) {
+				flagOther = true;
+			}
+			tmpPtrOther++;
+		}
+
+			//если флаги не быил опущены то записываем значение в массив С
+			if (!(flag) && !(flagOther)) {
+				*ptrD = *ptrA;
+				ptrD++;
+				colOthers++;
+			}
+		ptrA++;
+	}
+	return colOthers;
+}

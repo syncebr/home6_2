@@ -13,11 +13,14 @@ void SortArrDecrease(int arr[], int size);
 int main(void) {
 	setlocale(LC_ALL, "rus");
 	const int SIZE = 20;
+	srand(time(0));
 	int arr[SIZE];
 	GenerateArr(arr, SIZE);
 	cout << "Ваш массив:" << endl;
 	PrintArr(arr, SIZE);
 	SortArrIncrease(arr+1, SIZE);
+	cout << "Ваш массив:" << endl;
+	PrintArr(arr, SIZE);
 	SortArrDecrease(arr, SIZE);
 	cout << "Ваш массив:" << endl;
 	PrintArr(arr, SIZE);
@@ -45,31 +48,35 @@ void PrintArr(int arr[], int size) {
 }
 //сортируем четные элементы по возрастанию
 void SortArrIncrease(int arr[], int size) {
-	int tmp, j;
-	for (int i = 0; i<size - 2; i+=2) //i-номер последнего из упорядоченных
+	int tmp;
+	int *ptr = arr;
+	int *tmpPtr;
+	for (int i = 0; i<size - 2; i += 2, ptr += 2) //i-номер последнего из упорядоченных
 	{
-		tmp = *(arr+i + 2); //сохранить копию вставляемого элемента
-		j = i;    //j- индекс элемента, после которого может быть вставка
-		while (j >= 0 && *(arr+j)>tmp)  //пока не найдено место
+		tmp = *(ptr + 2); //сохранить копию вставляемого элемента
+		tmpPtr = ptr;    //j- индекс элемента, после которого может быть вставка
+		while (tmpPtr >= arr && *(tmpPtr)>tmp)  //пока не найдено место
 		{
-			*(arr+j + 2) = *(arr+j);  //сдвиг элемента вправо
-			j-=2;
+			*(tmpPtr + 2) = *(tmpPtr);  //сдвиг элемента вправо
+			tmpPtr -= 2;
 		}
-		*(arr+j + 2) = tmp;   //вставка на место
+		*(tmpPtr + 2) = tmp;   //вставка на место
 	}
 }
 //сортируем нечетные элементы по убыванию
 void SortArrDecrease(int arr[], int size) {
-	int tmp, j;
-	for (int i = 0; i<size - 2; i += 2) //i-номер последнего из упорядоченных
+	int tmp;
+	int *ptr=arr;
+	int *tmpPtr;
+	for (int i = 0; i<size - 2; i += 2, ptr += 2) //i-номер последнего из упорядоченных
 	{
-		tmp = *(arr + i + 2); //сохранить копию вставляемого элемента
-		j = i;    //j- индекс элемента, после которого может быть вставка
-		while (j >= 0 && *(arr + j)<tmp)  //пока не найдено место
+		tmp = *(ptr + 2); //сохранить копию вставляемого элемента
+		tmpPtr = ptr;    //j- индекс элемента, после которого может быть вставка
+		while (tmpPtr >= arr && *(tmpPtr)<tmp)  //пока не найдено место
 		{
-			*(arr + j + 2) = *(arr + j);  //сдвиг элемента вправо
-			j -= 2;
+			*(tmpPtr + 2) = *(tmpPtr);  //сдвиг элемента вправо
+			tmpPtr -= 2;
 		}
-		*(arr + j + 2) = tmp;   //вставка на место
+		*(tmpPtr + 2) = tmp;   //вставка на место
 	}
 }
